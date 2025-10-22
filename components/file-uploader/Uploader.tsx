@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import ReanderEmptyState, { ReanderErrorState } from "./ReanderState";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
+
 interface UplotedState {
   id: string | null;
   file: File | null;
@@ -29,7 +30,7 @@ export default function Uploader() {
     fileType: "image",
   });
 
-  const uploadFile = async (file: File) => {
+  async function uploadFile(file: File) {
     setFileState((prev) => ({
       ...prev,
       uploading: true,
@@ -40,16 +41,14 @@ export default function Uploader() {
       const res = await fetch("/api/s-three/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+
         body: JSON.stringify({
           fileName: file.name,
           contentType: file.type,
-          size: file.size,
+
           isImage: true,
         }),
       });
-
-      console.log(await res.json());
-      
 
       if (!res.ok) {
         toast.error("Faild to get presined url");
@@ -72,40 +71,42 @@ export default function Uploader() {
             const persentesComplited = (event.loaded / event.total) * 100;
             setFileState((prev) => ({
               ...prev,
-              uploading: false,
+
               progress: Math.round(persentesComplited),
-              error: true,
             }));
           }
-
-          xsr.onload = () => {
-            if (xsr.status === 200 || xsr.status === 204) {
-              setFileState((prev) => ({
-                ...prev,
-                uploading: false,
-                progress: 100,
-                key: key,
-              }));
-
-              toast.success("File uploaded sucessfully ");
-              resolve();
-            } else {
-              toast.error("Upload field...");
-            }
-
-          
-          };
-            xsr.onerror = () => {
-              reject(new Error("Upload filed"));
-            };
-
-            xsr.open("PUT", presignedUrl);
-            xsr.setRequestHeader("Content-Type", file.type);
-            xsr.send(file);
         };
+        xsr.onload = () => {
+          if (xsr.status === 200 || xsr.status === 204) {
+            setFileState((prev) => ({
+              ...prev,
+              uploading: false,
+              progress: 100,
+              key: key,
+            }));
+
+            toast.success("File uploaded sucessfully ");
+            resolve();
+          } else {
+            toast.error("Upload field...");
+          }
+        };
+        xsr.onerror = () => {
+          reject(new Error("Upload filed...."));
+        };
+
+        
+
+
+        xsr.open("PUT", String(presignedUrl));
+        xsr.setRequestHeader("Content-Type", file.type);
+
+        xsr.send(file);
       });
     } catch (error) {
       toast.error("Sumthing went wrong on upload file");
+
+      console.log("error", error);
 
       setFileState((prev) => ({
         ...prev,
@@ -114,11 +115,12 @@ export default function Uploader() {
         error: true,
       }));
     }
-  };
+  }
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
+
       setFileState({
         file,
         uploading: false,
@@ -128,10 +130,9 @@ export default function Uploader() {
         id: uuidv4(),
         isDeleting: false,
         fileType: "image",
-        
       });
 
-      uploadFile(file)
+      uploadFile(file);
     }
   }, []);
 
@@ -155,21 +156,19 @@ export default function Uploader() {
     }
   };
 
-
-  function renderContent(){
+  function renderContent() {
     if (fileState.uploading) {
-      return <h1>Uploading...</h1>
-
+      return <h1>Uploading...</h1>;
     }
 
     if (fileState.error) {
-      return <ReanderErrorState/>
+      return <ReanderErrorState />;
     }
     if (fileState.objectUrl) {
-      return <h1>Uploaded file</h1>
+      return <h1>Uploaded file</h1>;
     }
 
-    return <ReanderEmptyState isDragActive={isDragActive}/>
+    return <ReanderEmptyState isDragActive={isDragActive} />;
   }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -196,7 +195,6 @@ export default function Uploader() {
       <CardContent className="flex items-center justify-center w-full h-full p-4">
         <input {...getInputProps()} />
         {renderContent()}
-      
       </CardContent>
     </Card>
   );
