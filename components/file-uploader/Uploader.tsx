@@ -45,6 +45,7 @@ export default function Uploader() {
         body: JSON.stringify({
           fileName: file.name,
           contentType: file.type,
+          size: file.size,
 
           isImage: true,
         }),
@@ -95,10 +96,9 @@ export default function Uploader() {
           reject(new Error("Upload filed...."));
         };
 
-        
-
-
         xsr.open("PUT", String(presignedUrl));
+        console.log("p", presignedUrl);
+
         xsr.setRequestHeader("Content-Type", file.type);
 
         xsr.send(file);

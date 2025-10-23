@@ -9,6 +9,7 @@ import { S3 } from "@/lib/S3Client";
 export const fileUploadSchema = z.object({
   fileName: z.string().min(1, "file name is requred"),
   contentType: z.string().min(1, "content type is required"),
+  size: z.number().min(1, "size is required"),
 
   isImage: z.boolean(),
 });
@@ -16,7 +17,6 @@ export const fileUploadSchema = z.object({
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    console.log("body", body);
 
     const validation = fileUploadSchema.safeParse(body);
 
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { fileName, contentType } = validation.data;
+    const { fileName, contentType ,size} = validation.data;
 
     const uniceKey = `${uuidv4()}-${fileName}`;
 
@@ -35,6 +35,7 @@ export async function POST(req: Request) {
       Bucket: env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES,
       ContentType: contentType,
       Key: uniceKey,
+      ContentLength:Number(size)
     });
 
     const presignedUrl = await getSignedUrl(S3, command, { expiresIn: 3600 });
