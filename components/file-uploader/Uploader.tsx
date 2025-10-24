@@ -23,7 +23,12 @@ interface UplotedState {
   fileType: "image" | "video";
 }
 
-export default function Uploader() {
+interface IAppProps {
+  value?: string;
+  onChange?: (value: string) => void;
+}
+
+export default function Uploader({ value, onChange }: IAppProps) {
   const [fileState, setFileState] = useState<UplotedState>({
     error: false,
     file: null,
@@ -32,6 +37,7 @@ export default function Uploader() {
     progress: 0,
     isDeleting: false,
     fileType: "image",
+    key: value,
   });
 
   async function uploadFile(file: File) {
@@ -89,6 +95,7 @@ export default function Uploader() {
               progress: 100,
               key: String(key),
             }));
+            onChange?.(key);
 
             toast.success("File uploaded sucessfully ");
             resolve();
@@ -176,6 +183,8 @@ export default function Uploader() {
       if (fileState.objectUrl && !fileState.objectUrl.startsWith("http")) {
         URL.revokeObjectURL(fileState.objectUrl);
       }
+
+      onChange?.("");
 
       setFileState(() => ({
         file: null,
