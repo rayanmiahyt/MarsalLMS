@@ -10,6 +10,7 @@ import ReanderEmptyState, {
 } from "./ReanderState";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
+import { useConstractUrl } from "@/hooks/use-constract-url";
 
 interface UplotedState {
   id: string | null;
@@ -29,6 +30,7 @@ interface IAppProps {
 }
 
 export default function Uploader({ value, onChange }: IAppProps) {
+  const fileUrl = useConstractUrl(value || "");
   const [fileState, setFileState] = useState<UplotedState>({
     error: false,
     file: null,
@@ -38,6 +40,7 @@ export default function Uploader({ value, onChange }: IAppProps) {
     isDeleting: false,
     fileType: "image",
     key: value,
+    objectUrl: fileUrl,
   });
 
   async function uploadFile(file: File) {
