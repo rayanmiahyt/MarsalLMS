@@ -37,7 +37,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
-        <Toaster />
+        <Toaster closeButton position="bottom-center" />
       </body>
     </html>
   );

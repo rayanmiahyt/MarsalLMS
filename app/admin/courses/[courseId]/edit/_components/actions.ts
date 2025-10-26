@@ -6,6 +6,7 @@ import { ApiResponce } from "@/lib/types";
 import { courseSchema, CourseSchemaType } from "@/lib/zodSchemas";
 import arcjet, { detectBot, fixedWindow } from "@/lib/arcjet";
 import { request } from "@arcjet/next";
+import { revalidatePath } from "next/cache";
 
 const aj = arcjet
   .withRule(
@@ -72,5 +73,76 @@ export async function editCourse(
       status: "error",
       message: "Feild to update the Course",
     };
+  }
+}
+
+export async function reorderLestions(
+  chapterId: string,
+  lesstions: { id: string; position: number }[],
+  courseId: string
+): Promise<ApiResponce> {
+  try {
+    await requireAdmin();
+
+    if (!lesstions || lesstions.length === 0) {
+      return { status: "error", message: "no lestion provided for reordring" };
+    }
+
+    const updates = lesstions.map((lesstion) =>
+      prisma.lesson.update({
+        where: {
+          id: lesstion.id,
+          chapterId: chapterId,
+        },
+        data: {
+          position: lesstion.position,
+        },
+      })
+    );
+
+    await prisma.$transaction(updates);
+
+    revalidatePath(`/admin/courses/${courseId}/edit`);
+
+    return {
+      status: "sucess",
+      message: "Lestion reordered sucessfullt",
+    };
+  } catch {
+    return { status: "error", message: "fuiled to reorder lestions" };
+  }
+}
+
+export async function reorderChapters(
+  chourseId: string,
+  chapter: { id: string; position: number }[]
+): Promise<ApiResponce> {
+  await requireAdmin();
+  if (!chapter || chapter.length === 0) {
+    return { status: "error", message: "No chapter fount to reorder" };
+  }
+
+  try {
+    const updateChapter = chapter.map((chap) =>
+      prisma.chapter.update({
+        where: {
+          id: chap.id,
+        },
+        data: {
+          position: chap.position,
+        },
+      })
+    );
+
+    await prisma.$transaction(updateChapter);
+
+    revalidatePath(`/admin/courses/${chourseId}/edit`);
+
+    return {
+      status: "sucess",
+      message: "Chapter reordered sucessfully",
+    };
+  } catch {
+    return { status: "error", message: "chapter reordered filed" };
   }
 }
