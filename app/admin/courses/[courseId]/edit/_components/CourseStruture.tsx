@@ -35,7 +35,7 @@ import {
   Trash2,
 } from "lucide-react";
 import Link from "next/link";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { reorderChapters, reorderLestions } from "./actions";
 
@@ -68,6 +68,26 @@ export function CourseStruture({ data }: IAppProps) {
     })) || [];
 
   const [items, setItems] = useState(initialItems);
+
+  useEffect(() => {
+    setItems((prevItems) => {
+      const updatedData =
+        data.chapter.map((chapter) => ({
+          id: chapter.id,
+          title: chapter.title,
+          order: chapter.position,
+          isOpen:
+            prevItems.find((item) => item.id === chapter.id)?.isOpen ?? true,
+          lessions: chapter.lesson.map((lesson) => ({
+            id: lesson.id,
+            title: lesson.title,
+            order: lesson.position,
+          })),
+        })) || [];
+
+      return updatedData;
+    });
+  }, [data]);
 
   function SortableItem({ children, id, className, data }: SortabuleItemProps) {
     const {
