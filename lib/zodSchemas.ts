@@ -15,7 +15,7 @@ export const courseCatagory = [
   "Helth & fitnell",
   "Music",
   "Teaching & Academics",
-]as const
+] as const;
 
 export const courseSchema = z.object({
   title: z
@@ -45,4 +45,30 @@ export const courseSchema = z.object({
   status: z.enum(courseStatus),
 });
 
+export const chapterSchema = z.object({
+  name: z.string().min(3, { message: "name must be 3 caracter long" }),
+  courseId: z.string().uuid({ message: "Invalid course Id" }),
+});
+
+export const lessionSchema = z.object({
+  name: z.string().min(3, { message: "name must be 3 caracter long" }),
+  courseId: z.string().uuid({ message: "Invalid course Id" }),
+  chapterId: z.string().uuid({ message: "Invalid chapter Id" }),
+  discription: z
+    .string()
+    .min(3, { message: "Discription must be 3 caracter long" })
+    .optional(),
+  thumbnailKey: z
+    .string()
+    .min(3, { message: "thumbnailKey must be 3 caracter long" })
+    .optional(),
+  videoKey: z
+    .string()
+    .min(3, { message: "videoKey must be 3 caracter long" })
+    .optional(),
+});
+
 export type CourseSchemaType = z.infer<typeof courseSchema>;
+
+export type chapterSchemaType = z.infer<typeof chapterSchema>;
+export type LessionSchemaType = z.infer<typeof lessionSchema>;

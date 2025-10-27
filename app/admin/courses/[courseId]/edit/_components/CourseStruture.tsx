@@ -32,12 +32,16 @@ import {
   ChevronRight,
   FileText,
   GripVertical,
-  Trash2,
+ 
 } from "lucide-react";
 import Link from "next/link";
 import { ReactNode, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { reorderChapters, reorderLestions } from "./actions";
+import NewChapterModel from "./NewChapterModel";
+import NewLessonModel from "./NewLestionModel";
+import { DeleteLesson } from "./DeleteLesson";
+import { DeleteChapter } from "./DeleteChapter";
 
 interface IAppProps {
   data: AdminCourseSingulerType;
@@ -295,6 +299,7 @@ export function CourseStruture({ data }: IAppProps) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between border-b border-border">
           <CardTitle>Chapters</CardTitle>
+          <NewChapterModel courseId={data.id} />
         </CardHeader>
         <CardContent className="space-y-8">
           <SortableContext strategy={verticalListSortingStrategy} items={items}>
@@ -337,9 +342,7 @@ export function CourseStruture({ data }: IAppProps) {
                             {item.title}
                           </p>
                         </div>
-                        <Button size={"icon"} variant={"outline"}>
-                          <Trash2 className="size-4" />
-                        </Button>
+                       <DeleteChapter chapterId={item.id} courseId={data.id}/>
                       </div>
 
                       <CollapsibleContent>
@@ -371,9 +374,11 @@ export function CourseStruture({ data }: IAppProps) {
                                         {lestion.title}
                                       </Link>
                                     </div>
-                                    <Button variant={"outline"} size={"icon"}>
-                                      <Trash2 className="size-4" />
-                                    </Button>
+                                    <DeleteLesson
+                                      chapterId={item.id}
+                                      courseId={data.id}
+                                      lestionId={lestion.id}
+                                    />
                                   </div>
                                 )}
                               </SortableItem>
@@ -381,9 +386,10 @@ export function CourseStruture({ data }: IAppProps) {
                           </SortableContext>
 
                           <div className="p-2">
-                            <Button variant={"outline"} className="w-full">
-                              Create a New Lesson
-                            </Button>
+                            <NewLessonModel
+                              chapterId={item.id}
+                              courseId={data.id}
+                            />
                           </div>
                         </div>
                       </CollapsibleContent>
