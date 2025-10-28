@@ -50,19 +50,25 @@ export function RenderUploadedState({
   prevjewUrl,
   isDeleting,
   handaleRemoveFile,
+  fileTypeAcepted,
 }: {
   prevjewUrl: string;
   isDeleting: boolean;
   handaleRemoveFile: () => void;
+  fileTypeAcepted: "image" | "video";
 }) {
   return (
-    <div>
-      <Image
-        src={prevjewUrl}
-        alt="uploadet image"
-        fill
-        className="object-contain p-2"
-      />
+    <div className="relative group w-full h-full flex items-center justify-center">
+      {fileTypeAcepted === "video" ? (
+        <video src={prevjewUrl} controls className="rounded-md w-full h-full" />
+      ) : (
+        <Image
+          src={prevjewUrl}
+          alt="uploadet image"
+          fill
+          className="object-contain p-2"
+        />
+      )}
 
       <Button
         variant={"destructive"}

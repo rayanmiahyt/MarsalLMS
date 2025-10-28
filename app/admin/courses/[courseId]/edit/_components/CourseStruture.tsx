@@ -369,7 +369,7 @@ export function CourseStruture({ data }: IAppProps) {
                                       </Button>
                                       <FileText className="size-4" />
                                       <Link
-                                        href={`/admin/courses/${data.id}/${lestion.id}`}
+                                        href={`/admin/courses/${data.id}/${item.id}/${lestion.id}`}
                                       >
                                         {lestion.title}
                                       </Link>
