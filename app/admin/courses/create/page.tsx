@@ -45,6 +45,7 @@ import { useTransition } from "react";
 import { CreateCourse } from "./actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useConfetti } from "@/hooks/useconfetti";
 
 export default function CourseCreatePage() {
   const form = useForm<CourseSchemaType>({
@@ -63,7 +64,9 @@ export default function CourseCreatePage() {
   });
 
   const [isPanding, startTrangition] = useTransition();
-  const router = useRouter()
+  const router = useRouter();
+
+  const { triggerConfetti } = useConfetti();
 
   function onSubmit(values: CourseSchemaType) {
     startTrangition(async () => {
@@ -75,13 +78,13 @@ export default function CourseCreatePage() {
       }
       if (data.status === "sucess") {
         toast.success(data.message);
-        form.reset()
+        triggerConfetti();
+        form.reset();
         router.push("/admin/courses");
-        return
-      } 
-      else if (data.status === "error") {
+        return;
+      } else if (data.status === "error") {
         toast.error(data.message);
-        return
+        return;
       }
     });
   }
@@ -191,7 +194,11 @@ export default function CourseCreatePage() {
                   <FormItem>
                     <FormLabel>Thumbnail Image</FormLabel>
                     <FormControl>
-                      <Uploader fileTypeAcepted="image" onChange={field.onChange} value={field.value} />
+                      <Uploader
+                        fileTypeAcepted="image"
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
                       {/* <Input placeholder=" Thumbnail Image" {...field} /> */}
                     </FormControl>
                     <FormMessage />

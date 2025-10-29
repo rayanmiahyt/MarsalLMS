@@ -34,7 +34,7 @@ export async function adminGetCourse({ courseId }: { courseId: string }) {
               discription: true,
               thumbnailKey: true,
               position: true,
-              videoKey:true
+              videoKey: true,
             },
           },
         },
