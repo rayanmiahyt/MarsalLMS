@@ -3,11 +3,22 @@ import { ReanderDiscription } from "@/components/rich-text-editor/ReanderDiscrip
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
 
 import { env } from "@/lib/env";
-import { IconBook, IconCategory, IconChartBar, IconChevronDown, IconClock, IconPlayerPlay } from "@tabler/icons-react";
+import {
+  IconBook,
+  IconCategory,
+  IconChartBar,
+  IconChevronDown,
+  IconClock,
+  IconPlayerPlay,
+} from "@tabler/icons-react";
 import { CheckIcon } from "lucide-react";
 import Image from "next/image";
 
@@ -233,9 +244,10 @@ export default async function SlugPage({ params }: { params: Params }) {
                 </ul>
               </div>
 
-
               <Button className="w-full">Enroll Now!</Button>
-              <p className="mt-3 text-center text-xs text-muted-foreground">30-day money-back gurantee</p>
+              <p className="mt-3 text-center text-xs text-muted-foreground">
+                30-day money-back gurantee
+              </p>
             </CardContent>
           </Card>
         </div>
